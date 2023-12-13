@@ -1,0 +1,157 @@
+{% extends 'base.html' %}
+{% load i18n %} 
+{% block content %}
+
+<style>
+    
+    .col-md-6 .card-body{ background: #f8f8f8 !important;}
+    .court,form{ background: #f8f8f8;}
+    h2,
+    h3 {
+        color: white;
+    }
+
+    
+    /* Change text color of the buttons and title */
+    
+    .fc .fc-button-primary:not(:disabled).fc-button-active,.fc .fc-button-primary , .fc .fc-button-primary:not(:disabled):active
+    
+    {
+    background-color: #7b058c;
+    }
+
+    .fc .fc-button-primary:disabled {
+    background-color: #7b058c;}
+/* Change text color for the day names in the header */
+    #availabilityFullCourtModal .fc-col-header-cell .fc-col-header-cell-cushion,  .fc-toolbar-chunk .fc-toolbar-title  {
+        color:#7b058c; /* Replace with your desired color */
+    }
+   
+
+    /* Change text color for the day numbers */
+    #availabilityFullCourtModal .fc-daygrid-day-number,   #availabilityFullCourtModal .modal-header .modal-title, #fc-dom-1  {
+        color: #7b058c; /* Replace with your desired color */
+    }
+
+</style>
+
+
+
+{% if messages %}
+<div class="alert-messages">
+    {% for message in messages %}
+    <div class="alert {{ message.tags }}">
+        {{ message }}
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+<div class="container">
+    <!-- Full Court Date Picker Form -->
+    <form method="get" action="" style="padding: 20px; margin-top: 20px; border-radius: 10px;">
+        <!-- Full Court Date Picker -->
+        <label for="full-court-date-picker">% trans "Select a date for full court:" %</label>
+        <input type="date" id="full-court-date-picker" name="full_court_date" value="{{ full_court_selected_date }}"
+            style="margin-right: 10px;">
+
+        <!-- Full Court Part of the Day Selector -->
+        <label for="full-court-part-of-day">Part of the Day:</label>
+        <select id="full-court-part-of-day" name="full_court_part_of_day" style="margin-right: 10px;">
+            <option value="">Any</option>
+            <option value="morning" {% if is_full_court_part_of_day_morning %} selected {% endif %}>Morning</option>
+            <option value="afternoon" {% if is_full_court_part_of_day_afternoon %} selected {% endif %}>Afternoon</option>
+            <option value="evening" {% if is_full_court_part_of_day_evening %} selected {% endif %}>Evening</option>
+        </select>
+
+        <button type="submit"
+            style="background-color: #7b058c;border-radius: 10px; color: white; padding: 5px 10px; border: none;">Show Full
+            Courts
+        </button>
+        <!-- Trigger Modal Button -->
+        <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#availabilityFullCourtModal" style="border-radius: 10px; border-color: #7b058c; border-width: 2px; background-color: #f8f8f8; margin-left: 20%;">
+            Calendar
+        </button>
+        
+        
+    </form>
+
+    <!-- Full Court Booking Section -->
+    <div class="full-court-booking" style="margin-top: 20px;">
+       
+        {% if full_courts_with_slots %}
+        <div class="scrollable-container" style="overflow-x: auto; white-space: wrap; padding: 10px; height: 40vh;">
+            {% for item in full_courts_with_slots %}
+            <div class="court card d-inline-block"
+                style="width: 40%; height: 35vh;  margin-right: 10px; border: 1px solid #ddd; vertical-align: top; padding: 2px;">
+                <div class="row g-0">
+                    <div class="col-md-6"
+                        style="background: url('{{ item.court.image.url }}') no-repeat center center; height: 34vh; background-size: cover; min-height: 200px;">
+                        <!-- Fallback text if no image is available -->
+                        {% if not item.court.image %}
+                        <p class="p-2">No image available.</p>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card-body" style="padding: 10px;">
+                            <h5 class="card-title">
+                                {{ item.court.name }}
+                                <!-- Display map link if exists -->
+                                {% if item.court.map_link %}
+                                <a href="{{ item.court.map_link }}" target="_blank"
+                                    class="ms-2 small text-decoration-none">Map - Click Here</a>
+                                {% endif %}
+                            </h5>
+                            <p class="card-text"><small class="text-muted">Location: {{ item.court.location }}</small></p>
+                            <!-- Form for submitting full court booking -->
+                            {% if user.is_authenticated %}
+                            <form method="post" action="{% url 'reserve' item.court.id %}" style="margin-top: 10px;">
+                                {% csrf_token %}
+                                <!-- Display available timeslots for full court booking -->
+                                {% for timeslot in item.full_court_slots %}
+                                <div style="margin-bottom: 10px;">
+                                    <input type="radio" name="full_court_timeslot_id" id="timeslot-{{ timeslot.id }}"
+                                        value="{{ timeslot.id }}">
+                                    <label for="timeslot-{{ timeslot.id }}" style="white-space: normal;">
+                                        {{ timeslot.date }} - {{ timeslot.template.start_time|date:"H:i" }} to
+                                        {{timeslot.template.end_time|date:"H:i" }}
+                                    </label>
+                                </div>
+                                {% endfor %}
+                                <input type="hidden" name="book_full_court" value="1">
+                                <input type="hidden" name="court_id" value="{{ item.court.id }}">
+                                <input type="hidden" name="selected_date" value="{{ selected_date }}">
+                                <button type="submit" class="btn btn-warning"
+                                    style="background-color: #ffc107; color: black; padding: 5px 10px; border: none;">Book
+                                    Full Court</button>
+                            </form>
+                            {% else %}
+                            <p>Please log in to book.</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p>No full courts available for the selected date.</p>
+        {% endif %}
+    </div>
+</div>
+<!-- Modal -->
+<div class="modal fade" id="availabilityFullCourtModal" tabindex="-1" aria-labelledby="availabilityFullCourtModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="availabilityFullCourtModalLabel">Availability Calendar</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="calendar-full-court"></div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,74 @@
+{% load static %} <!-- This should be at the top of the file -->
+
+<style>
+.navbar-nav a:hover{text-decoration: underline; background-color: #7b058c; border-radius: 10px; color: white; }
+.nav-link:hover{color: white;}
+
+.nav-link, .navbar-brand{color: white !important;}
+
+</style>
+
+
+
+<div class="navbar navbar-expand-lg bg-body-tertiary" style=" background: rgba(123, 5, 140, 1) !important; ">
+<a class="navbar-brand">Booking</a>
+<ul class="navbar-nav ms-auto">
+    {% if user.is_authenticated %}
+    <li class="nav-item dropdown">
+        <!-- Avatar as a trigger for the dropdown -->
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
+            aria-expanded="false">
+            <img src="{% if user.profile.image %}{{ user.profile.image.url }}{% else %}{% static 'images/avatar.png' %}{% endif %}"
+                alt="Profile" class="navbar-avatar">
+            <!-- Optionally, display the user's name next to the avatar -->
+            {{ user.get_full_name|default:user.username }}
+        </a>
+        <!-- Dropdown Menu -->
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <a class="dropdown-item" href="{% url 'profile' %}">My Profile</a>
+            <a class="dropdown-item" href="{% url 'user_reservations' %}">My Reservations</a>
+            <a class="dropdown-item" href="{% url 'user_tournaments' %}">My Tournaments</a>
+            <!-- Add more profile related links if needed -->
+        </div>
+    </li>
+    <li class="c">
+        <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+    </li>
+    {% else %}
+    <li class="nav-item">
+        <a class="nav-link" href="{% url 'signup' %}">Sign Up</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{% url 'login' %}">Login</a>
+    </li>
+    {% endif %}
+</ul>
+</div>
+<nav class="navbar navbar-expand-lg bg-body-tertiary"   style="background: rgb(148, 82, 158) !important;">
+    <div class="container-fluid">
+       
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent" >
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0" style="font-size: 18px">                        
+                   
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'individual_bookings' %}">Individual Bookings</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'full_court_bookings' %}">Full Court Booking</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'tournaments_bookings' %}">Tournaments Booking</a>
+                </li>
+             
+            </ul> 
+            
+           
+            
+        </div>
+    </div>
+</nav>
+

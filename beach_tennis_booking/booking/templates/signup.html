@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<style>
+    body {
+       
+background: rgb(242,68,29);
+background: radial-gradient(circle, rgba(242,68,29,1) 0%, rgba(123,5,140,1) 85%); height: 100vh;}
+    /* Add other styles here if needed */
+
+     /* Style for the input fields */
+    input[type='text']:-webkit-autofill,
+    input[type='email']:-webkit-autofill,
+    input[type='password']:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0 30px white inset !important;
+}
+</style>
+<div class="row justify-content-center">
+    <div class="col-md-6" style="padding: 20px; border: 1px solid #ddd; margin-top: 20px; background-color: white; border-radius: 10px;">
+        <h2 class="text-center mt-4">Sign Up</h2>
+        <form method="post" class="mt-4">
+            {% csrf_token %}
+            <div style="display: flex; flex-direction: column; gap: 10px; align-items: center; ">
+                {% for field in form %}
+                <div style="display: flex; align-items: center; font-weight: bold;">
+                    <label for="{{ field.id_for_label }}" style="width: 150px;">{{ field.label}}</label>
+                    {{ field }}
+                </div>
+                {% endfor %}
+            </div>
+            <button type="submit" class="btn btn-primary"
+                style=" display: block; width: 60%; padding: 5px; border: none; margin:50px auto;background-color: #7b058c;">Sign up</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

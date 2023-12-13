@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+{% if user.is_authenticated %}
+<div class="col-md-12">
+    <h2>Your Tournament Registrations</h2>
+    <div style="overflow-x: auto; white-space: wrap; padding: 10px; height: 70vh;">
+        {% for registration in user_tournament_registrations %}
+        <div class="tournament d-inline-block"
+            style="width: 30%; margin-right: 10px; vertical-align: top; padding: 10px; background-color: #f8f8f8;margin-top: 20px; border-radius: 10px;border: 1px solid #ddd;">
+            <h3>{{ registration.tournament.name }}</h3>
+            {% if registration.tournament.image %}
+            <img src="{{ registration.tournament.image.url }}" alt="{{ registration.tournament.name }}"
+                style="width: 100%; height: auto; display: block; margin-bottom: 10px;">
+            {% else %}
+            <p>No image available for this tournament.</p>
+            {% endif %}
+            <p>Location: {{ registration.tournament.location }}</p>
+            <p>Date: {{ registration.tournament.start_date }} to {{ registration.tournament.end_date }}</p>
+            <p>Contact: {{ registration.tournament.contact_details }}</p>
+            <p>Additional Info: {{ registration.tournament.additional_info }}</p>
+            <p>Available Slots: {{ registration.tournament.available_slots }}</p>
+            {% if registration.can_cancel %}
+            <a href="{% url 'cancel_tournament_registration' registration.id %}" class="btn btn-danger"
+                style="padding: 5px 10px; border: none;">Cancel Registration</a>
+            {% else %}
+            <p class="text-warning">Cancellation deadline has passed. Please contact the organizer.</p>
+            {% endif %}
+        </div>
+        {% empty %}
+        <p>You have no tournament registrations.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+{% endblock %}

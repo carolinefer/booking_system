@@ -1,0 +1,93 @@
+{% extends 'admin/base_site.html' %}
+{% load custom_filters %}
+{% load static %} <!-- Load the static files here -->
+
+{% block extrahead %}
+<link rel="stylesheet" href="{% static 'css/styles.css' %}">
+{% endblock extrahead %}
+
+{% block content %}
+
+<div class="form-and-year-container"> <!-- Container for form and year display -->
+    <form method="get" action="{% url 'admin_calendar' %}" class="filter-form">
+        <div>{{ form.start_date.label_tag }} {{ form.start_date }}</div>
+        <div>{{ form.court.label_tag }} {{ form.court }}</div>
+        <div>{{ form.level.label_tag }} {{ form.level }}</div>
+        <div>{{ form.player_type.label_tag }} {{ form.player_type }}</div>
+        <button type="submit">Filter</button>
+    </form>
+    <div class="year-display">
+        {{ dates.0.year }}
+    </div>
+</div>
+<div class="table-responsive"> <!-- Scrollable table container -->
+
+    <table>
+        <thead>
+            <tr>
+                <th class="court-cell">Court</th>
+                {% for day in dates %}
+                <th>{{ day }}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for court_data in calendar_data %}
+            <tr>
+                <td class="court-cell">{{ court_data.court_name }}</td>
+                {% for day_data in court_data.days_data %}
+                <td>
+                    <div class="day-container">
+                        {% for timeslot in day_data.timeslots %}
+                        <div class="timeslot-container">
+                            <div class="timeslot-header">
+                                {{ timeslot.template.start_time|date:"H:i" }} - {{ timeslot.template.end_time|date:"H:i" }}
+                                <span class="tooltip-text">
+                                    Level: {{ timeslot.template.level.name|default:"N/A" }},
+                                    Player Type: {{ timeslot.template.player_type.name|default:"N/A" }}
+                                </span>
+                            </div>
+                            <div class="booking-slots">
+                                {% if timeslot.template.booking_type == "full_court" %}
+                                <!-- Render full court as a single large rectangle -->
+                                <div class="slot full-court {% if timeslot.is_full_court_booked %}booked{% else %}available{% endif %}">
+                                    <!-- Content for full court booking -->
+                                    {% if timeslot.is_full_court_booked %}
+                                    {% with reservation=timeslot.slots_data|get_item:1 %}
+                                    {% if reservation %}
+                                    <a href="{% url 'admin:booking_reservation_change' reservation.id %}">Booking ID: {{ reservation.id }}</a>
+                                    {% else %}
+                                    Full Court Booked
+                                    {% endif %}
+                                    {% endwith %}
+                                    {% else %}
+                                    <a href="{% url 'admin:booking_reservation_add'%}">Available for Full Court</a>
+                                    {% endif %}
+                                </div>
+                                {% else %}
+                                <!-- Render individual slots -->
+                                {% for slot_num in timeslot.slots_data %}
+                                {% with reservation=timeslot.slots_data|get_item:slot_num %}
+                                <div class="slot {% if not reservation %}available{% endif %}">
+                                    <!-- Content for individual slot booking -->
+                                    {% if reservation %}
+                                    <a href="{% url 'admin:booking_reservation_change' reservation.id %}">Booking ID: {{ reservation.id }}</a>
+                                    {% else %}
+                                    <a href="{% url 'admin:booking_reservation_add'%}">Available</a>
+                                    {% endif %}
+                                </div>
+                                {% endwith %}
+                                {% endfor %}
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>                
+                </td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

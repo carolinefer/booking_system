@@ -1,0 +1,13 @@
+{% extends "admin/base.html" %}
+{% comment %} {% load i18n eatn_tags static %} {% endcomment %}
+{% load i18n %}
+{% load static %}
+{% block title %}Beach Tennis Bookings{% endblock %}
+
+{% block extrastyle %}
+<link rel="stylesheet" type="text/css"  href="{% static 'css/custom_admin.css' %}"/>
+{% endblock %}
+
+{% block branding %}
+<h1 id="site-name"><a href="{% url 'admin:index' %}">Beach Tennis Bookings</a></h1>
+{% endblock %}

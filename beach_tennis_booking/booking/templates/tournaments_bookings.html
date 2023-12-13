@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<style>
+    /* Styles for the scrollable container */
+    .tournament-section {
+        display: flex;
+        overflow-x: auto;
+        /* Enable horizontal scrolling */
+        white-space: nowrap;
+        /* Keep cards in a single line */
+        padding: 10px 0;
+        /* Add some vertical padding */
+    }
+
+    /* Styles for individual tournament cards */
+    .tournament-card {
+        flex: 0 0 300px;
+        /* Fixed width for each card */
+        margin-right: 20px;
+        /* Space between cards */
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        background-color: #f8f8f8;
+        display: flex;
+        /* Horizontal layout for image and details */
+        margin-bottom: 20px;
+        align-items: stretch;
+    }
+
+    .tournament-card img {
+        width: 100px;
+        /* Fixed width for image */
+        height: 100%;
+        /* Full height */
+        object-fit: cover;
+        /* Cover the area without stretching */
+        border-radius: 10px 0 0 10px;
+        /* Round left corners */
+    }
+
+    .tournament-details {
+        padding: 10px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        flex-grow: 1;
+        /* Take up remaining space */
+    }
+
+    .tournament-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .tournament-card .map-link {
+        color: #0000EE;
+        text-decoration: underline;
+    }
+
+    .tournament-card .btn-primary {
+        background-color: #7b058c;
+        color: white;
+        border: none;
+        border-radius: 10px;
+        padding: 5px 10px;
+        font-size: 0.9em;
+    }
+</style>
+
+<div class="container">
+    <h2>Upcoming Tournaments</h2>
+    <div class="tournament-section">
+        {% for tournament in tournaments %}
+        <div class="tournament-card">
+            {% if tournament.image %}
+            <img src="{{ tournament.image.url }}" alt="{{ tournament.name }}">
+            {% else %}
+            <div>No image available.</div>
+            {% endif %}
+            <div class="tournament-details">
+                <div class="tournament-header">
+                    <h3>{{ tournament.name }}</h3>
+                    {% if tournament.map_link %}
+                    <a href="{{ tournament.map_link }}" target="_blank" class="ms-2 small text-decoration-none">Map -
+                        Click Here</a>
+                    {% endif %}
+                </div>
+                <div>
+                    <p>Location: {{ tournament.location }}</p>
+                    <p>Date: {{ tournament.start_date|date:"DATE_FORMAT" }} to {{tournament.end_date|date:"DATE_FORMAT"}}</p>
+                    <p>Contact Details: {{ tournament.contact_details }}</p>
+                </div>
+                <div>
+                    {% if tournament.is_full %}
+                    <p>This tournament is fully booked.</p>
+                    {% else %}
+                    {% if user.is_authenticated %}
+                    <a href="{% url 'tournament_registration' tournament.id %}" class="btn btn-primary">Register</a>
+                    {% else %}
+                    <p>Please log in to register for the tournament.</p>
+                    {% endif %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock %}

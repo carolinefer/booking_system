@@ -1,0 +1,54 @@
+
+
+
+#header {
+    background: rgba(123, 5, 140, 1);
+
+}
+div.breadcrumbs {
+    /* color: #c4dce8; */
+    background: rgb(148, 82, 158);
+}
+.module caption {
+    background: rgba(123, 5, 140, 1);
+}
+
+.button,
+input[type=submit],
+input[type=button],
+.submit-row input,
+a.button {
+    background: rgba(123, 5, 140, 1);
+}
+
+.button.default,
+input[type=submit].default,
+.submit-row input.default,
+a.button {
+    background: rgba(123, 5, 140, 1);
+}
+
+.button:hover,
+input[type=submit]:hover,
+input[type=button]:hover {
+    background: #878787;
+}
+
+.button.default:hover,
+input[type=submit].default:hover {
+    background: #878787;
+}
+
+.module h2,
+.module caption,
+.inline-group h2 {
+    background: rgba(123, 5, 140, 1);
+}
+
+#branding h1 a:link,
+#branding h1 a:visited {
+    color: #fff;
+}
+
+
+

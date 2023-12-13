@@ -1,0 +1,13 @@
+{% extends "admin/index.html" %}
+{% block content %}
+<div class="dashboard-module">
+    <div class="module">
+        <table>
+            <tr>
+                <td><a href="{{ custom_calendar_url }}">View Calendar</a></td>
+            </tr>
+        </table>
+    </div>
+</div>
+{{ block.super }}
+{% endblock %}

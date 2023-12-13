@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<!-- Display user's reservations with cancellation option -->
+{% if user.is_authenticated %}
+<div class="col-md-12">
+    <h2>Your Reservations</h2>
+    <div style="overflow-x: auto; white-space: wrap; padding: 10px; height: 70vh;">
+        {% for reservation in active_reservations %}
+        <div class="reservation d-inline-block"
+            style="width: 30%; margin-right: 10px; vertical-align: top; padding: 10px; background-color: #f8f8f8;margin-top: 20px; border-radius: 10px;border: 1px solid #ddd; ">
+            <!-- Display the court name -->
+            <h5>Reservation for {{ reservation.timeslot.template.court.name }}</h5>
+
+            <!-- Display the court image if it exists -->
+            {% if reservation.timeslot.template.court.image %}
+            <img src="{{ reservation.timeslot.template.court.image.url }}"
+                alt="{{ reservation.timeslot.template.court.name }}"
+                style="width: 100%; height: auto; display: block; margin-bottom: 10px;">
+            {% else %}
+            <p>No image available for this court.</p>
+            {% endif %}
+
+            <!-- Display the reserved time slot details -->
+            <p>Reserved Date: {{ reservation.timeslot.date }}</p>
+            <p>Reserved Time: {{ reservation.timeslot.template.start_time|date:"H:i" }} to
+                {{reservation.timeslot.template.end_time|date:"H:i" }}</p>
+            <!-- Conditional display based on booking type -->
+            {% if reservation.timeslot.template.booking_type == "individual" %}
+            <p>Level: {{ reservation.timeslot.template.level.name }}</p>
+            <p>Player Type: {{ reservation.timeslot.template.player_type.name }}</p>
+            <p>Slots booked: {{ reservation.slot_count }}</p>
+            {% else %}
+            <p>Booking Type: Full Court</p>
+            {% endif %}
+            <p>Reserved on: {{ reservation.reserved_on }}</p>
+            <!-- Add more reservation details if needed -->
+            <a href="{% url 'cancel_reservation' reservation.id %}" class="btn btn-danger"
+                style="padding: 5px 10px; border: none;">Cancel</a>
+        </div>
+        {% empty %}
+        <p>You have no active reservations.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+{% endblock %}

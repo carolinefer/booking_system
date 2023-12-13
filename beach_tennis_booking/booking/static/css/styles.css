@@ -1,0 +1,224 @@
+.scrollable-container {
+    display: flex;
+    overflow-x: auto;
+    padding-bottom: 10px;
+    /* Adjust as needed */
+}
+
+.scrollable-container>div {
+    flex: 0 0 auto;
+    /* Prevent divs from shrinking */
+    margin-right: 10px;
+    /* Spacing between items */
+}
+
+.card-title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.card-title a {
+    font-size: 0.8rem;
+    color: #007bff;
+    /* Bootstrap primary color */
+}
+
+.card-title a:hover {
+    color: #0056b3;
+    /* Darker shade for hover effect */
+}
+
+.img-fluid {
+    height: 200px;
+    /* Adjust as needed */
+    object-fit: cover;
+    /* To ensure images cover the area nicely */
+}
+.navbar-avatar {
+    width: 30px;
+    /* Adjust size as needed */
+    height: 30px;
+    border-radius: 50%;
+    /* Circular avatar */
+    object-fit: cover;
+    /* Ensure the image covers the area */
+}
+
+/* Hover effect for dropdown */
+.dropdown:hover .dropdown-menu {
+    display: block;
+}
+
+/* Ensuring the dropdown menu is initially hidden */
+.dropdown .dropdown-menu {
+    display: none;
+}
+
+.day-container {
+    width: 100%;
+    /* Ensures that the container fills the cell */
+}
+
+.timeslot-container {
+    border: 1px solid #ddd;
+    margin-bottom: 5px;
+    /* Separates each timeslot visually */
+}
+
+.timeslot-header {
+    background-color: #f2f2f2;
+    padding: 5px;
+    text-align: center;
+    /* Styling for the timeslot label */
+}
+
+.booking-slots {
+    display: flex;
+    /* Keeps slots in a row */
+}
+
+.slot {
+    flex: 1;
+    border: 1px solid #ddd;
+    padding: 10px;
+    margin: 2px;
+    text-align: center;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    /* Your existing slot styling */
+}
+
+.available {
+    background-color: #90ee90;
+    /* light green */
+    /* Your existing styling for available slots */
+}
+
+.timeslot-header {
+    padding: 5px;
+    background-color: #f2f2f2;
+    display: block;
+    position: relative;
+    margin: 0;
+    width: 100%;
+    box-sizing: border-box;
+    /* Include padding and border in the element's total width and height */
+    /* Other styling as needed */
+}
+
+.tooltip-text {
+    visibility: hidden;
+    width: 120px;
+    /* Adjust width as needed */
+    background-color: black;
+    color: white;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+    position: absolute;
+    z-index: 1;
+    bottom: 100%;
+    left: 50%;
+    margin-left: -60px;
+    /* Adjust based on width */
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.timeslot-header:hover .tooltip-text {
+    visibility: visible;
+    opacity: 1;
+    margin: 0;
+    padding: 0;
+}
+
+.filter-form {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    /* Consistent spacing */
+    margin-bottom: 20px;
+    /* Spacing from the calendar */
+    gap: 1cm;
+    /* Spacing between form elements */
+}
+
+.filter-form div {
+    display: flex;
+    align-items: center;
+}
+
+.filter-form button {
+    padding: 10px 20px;
+    /* Increase padding for a larger button */
+    font-size: 1.2em;
+    /* Larger font size */
+    margin-left: 1cm;
+    /* Spacing before the button */
+    background-color: rgba(123, 5, 140, 1);
+    /* Background color */
+    color: white;
+    /* Text color */
+    border: none;
+    border-radius: 5px;
+    /* Rounded corners */
+    cursor: pointer;
+    /* Cursor change on hover */
+}
+
+.filter-form button:hover {
+    background-color:#878787;
+    /* Darker background on hover */
+}
+
+ /* Common styles for "Court" header and court name cells */
+ .court-cell {
+     background-color: rgb(148, 82, 158);
+     /* Light grey background */
+     font-weight: bold;
+     /* Bold font */
+     border-right: 2px solid #dcdcdc;
+     /* Right border */
+     text-align: center;
+     /* Center text alignment */
+     color: white;
+ }
+
+.table-responsive {
+    overflow-x: auto;
+    /* Make table scrollable horizontally */
+}
+
+table {
+    width: 100%;
+    /* Full width within its container */
+    border-collapse: collapse;
+}
+
+th,
+td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+    /* Adjust text alignment as needed */
+}
+
+.year-display {
+    text-align: center;
+    margin-top: 10px;
+    font-size: 1.2em;
+}
+
+/* Calendar view */
+@media (max-width: 768px) {
+    .fc .fc-header-toolbar {
+        font-size: 12px; 
+    }
+
+    .fc .fc-daygrid-day {
+        padding: 4px; 
+       
+    }
+}
+

@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<style>
+    body {
+       background: rgb(242,68,29);
+background: radial-gradient(circle, rgba(242,68,29,1) 0%, rgba(123,5,140,1) 85%); height: 100vh;}
+    
+    /* Style for the input fields */
+    input[type='text']:-webkit-autofill,
+    input[type='password']:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0 30px white inset !important;
+}
+
+    /* Add other styles here if needed */
+</style>
+<div class="row justify-content-center" style="height: 100vh; ">
+    <div class="col-md-6"
+        style="padding: 30px; background-color:white; margin-top: 50px; border-radius: 10px; height: 50vh; width: 40vh;">
+        <h2 class="text-center mt-4" style="padding-bottom: 25px;">Login in to your account</h2>
+        <form method="post" class="mt-4">
+            {% csrf_token %}
+            <div style="display: flex; flex-direction: column; gap: 20px; align-items: center;">
+                {% for field in form %}
+                <div style=" display:block; text-align: center; font-weight: bold;">
+                    <label for="{{ field.id_for_label }}" style="width: 70%; text-align: left; ">{{ field.label}}</label>
+                    {{ field }}
+                </div>
+                {% endfor %}
+            </div>
+            <button type="submit" class="btn btn-primary"
+                style="display: block; width: 70%; padding: 5px; border: none; margin: 50px auto; background-color: #7b058c;">Next</button>
+
+            <!-- Forgot Password Link -->
+            <div style="text-align: right;">
+                <a href="{% url 'password_reset' %}">Forgot Password?</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock %}

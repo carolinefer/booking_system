@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <h1>Confirm Cancellation</h1>
+    <p>Are you sure you want to cancel your reservation for {{ reservation.timeslot.court.name }}?</p>
+    <p><strong>Note:</strong> Cancelling within 6 hours of the game time may result in a charge.</p>
+
+    <form action="{% url 'cancel_reservation' reservation.id %}" method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Confirm Cancellation</button>
+        <a href="{% url booking_type %}" class="btn btn-secondary">Go Back</a>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,231 @@
+{% extends 'base.html' %}
+{% load static %} <!-- Add this line at the top of your template -->
+{% block content %}
+
+<style>
+  .col-md-6{ background: #f8f8f8 !important;}
+    .court,form{ background: #f8f8f8;}
+    h2,
+    h3 {
+        color: white;
+    }
+
+ 
+
+    player-info {
+    display: inline-block;
+    text-align: center;
+   
+    }
+
+    .player-avatar {
+        width: 25px; /* Adjust size as needed */
+        height: 25px;
+        border-radius: 50%;
+        display: block;
+        margin: 0 auto;
+    }
+
+    .player-name {
+        display: block;
+        font-size: 0.6em;
+    }
+
+
+
+    /* Change text color of the buttons and title */
+    
+    .fc .fc-button-primary:not(:disabled).fc-button-active,.fc .fc-button-primary , .fc .fc-button-primary:not(:disabled):active
+    
+    {
+    background-color: #7b058c;
+    }
+
+    .fc .fc-button-primary:disabled {
+    background-color: #7b058c;}
+/* Change text color for the day names in the header */
+    #availabilityModal .fc-col-header-cell .fc-col-header-cell-cushion,  .fc-toolbar-chunk .fc-toolbar-title  {
+        color:#7b058c; /* Replace with your desired color */
+    }
+   
+
+    /* Change text color for the day numbers */
+    #availabilityModal .fc-daygrid-day-number,   #availabilityModal .modal-header .modal-title, #fc-dom-1  {
+        color: #7b058c; /* Replace with your desired color */
+    }
+
+
+</style>
+
+
+
+{% if messages %}
+<div class="alert-messages">
+    {% for message in messages %}
+    <div class="alert {{ message.tags }}">
+        {{ message }}
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+<!-- Date picker form -->
+<form method="get" action="" style="padding: 20px; margin-top: 20px; border-radius: 10px;">
+    <!-- Existing date picker -->
+    <label for="date-picker">Select a date:</label>
+    <input type="date" id="date-picker" name="date" value="{{ selected_date }}" style="margin-right: 10px;">
+    <!-- New filters -->
+    <label for="gender">Gender:</label>
+    <select id="gender" name="gender" style="margin-right: 10px;">
+        <option value="">Any</option>
+        <option value="Men" {% if is_gender_men %} selected {% endif %}>Men</option>
+        <option value="Women" {% if is_gender_women %} selected {% endif %}>Women</option>
+        <option value="Mixed" {% if is_gender_mixed %} selected {% endif %}>Mixed</option>
+    </select>
+
+    <label for="level">Level:</label>
+    <select id="level" name="level" style="margin-right: 10px;">
+        <option value="">Any</option>
+        <option value="Beginner" {% if is_level_beginner %} selected {% endif %}>Beginner</option>
+        <option value="Intermediate" {% if is_level_intermediate %} selected {% endif %}>Intermediate</option>
+        <option value="Advanced" {% if is_level_advanced %} selected {% endif %}>Advanced</option>
+    </select>
+
+    <label for="part-of-day">Part of the Day:</label>
+    <select id="part-of-day" name="part_of_day" style="margin-right: 10px;">
+        <option value="">Any</option>
+        <option value="morning" {% if is_part_of_day_morning %} selected {% endif %}>Morning</option>
+        <option value="afternoon" {% if is_part_of_day_afternoon %} selected {% endif %}>Afternoon</option>
+        <option value="evening" {% if is_part_of_day_evening %} selected {% endif %}>Evening</option>
+    </select>
+    
+    <button type="submit"
+        style="background-color: #7b058c;border-radius: 10px; color: white; padding: 5px 10px; border: none;">Show
+        Slots</button>
+    <!-- Trigger Modal Button -->
+    <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#availabilityModal" 
+    style="border-radius: 10px; border-color: #7b058c; border-width: 2px; background-color: #f8f8f8; margin-left: 5%;">
+        Calendar
+    </button>
+</form>
+
+
+<!-- Available slots -->
+<div class="col-md-12" style="margin-top: 20px;"> <!-- Adjusted to match the filter's column width -->
+    
+    <div class="scrollable-container" style="overflow-x: auto; white-space: wrap; padding: 10px; height: 40vh;">
+        {% for item in courts_with_slots %}
+        <div class="court card d-inline-block"
+            style="width: 40%; height: 35vh;  margin-right: 10px; border: 1px solid #ddd; vertical-align: top; padding: 2px;">
+            <!-- Adjusted width to fit two cards in a row -->
+            <div class="row g-0">
+                <div class="col-md-6">
+                    <!-- Court Image -->
+                    <div
+                        style="background: url('{{ item.court.image.url }}') no-repeat center center; height: 70%; background-size: cover; min-height: 200px;">
+                        <!-- Adjust min-height as needed -->
+                        {% if not item.court.image %}
+                        <p class="p-2">No image available.</p>
+                        {% endif %}
+                    </div>
+                    <!-- Avatars Below the Court Image -->
+                    {% if user.is_authenticated %}
+                    
+                    <div style="margin-top: 30px;">
+                        <h6>Who is playing</h6>
+                        {% for slot, available_slots, slot_range, reserved_profiles in item.slots %}
+                            <div class="reserved-players">
+                                {% for profile in reserved_profiles %}
+                                <div class="player-info" style="display: inline-block; margin-right: 10px;">
+                                    {% if profile.image %}
+                                    <img src="{{ profile.image.url }}" alt="{{ profile.user.first_name }}" class="player-avatar">
+                                    {% else %}
+                                    <!-- Placeholder image if no avatar -->
+                                    <img src="{% static 'images/avatar.png' %}" alt="Default avatar" class="player-avatar">
+                                    {% endif %}
+                                    <span class="player-name">{{ profile.user.first_name }}</span>
+                                </div>
+                                {% endfor %}
+                                {% for i in slot_range %}
+                                <div class="player-info" style="display: inline-block; margin-right: 10px;">
+                                    <!-- Placeholder image if no avatar -->
+                                    <img src="{% static 'images/avatar.png' %}" alt="Default avatar" class="player-avatar">
+                                    <span class="player-name">Available</span>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="col-md-6">
+                    <div class="card-body" style="padding: 10px;">
+                        <h5 class="card-title" style="margin-bottom: 10px;">
+                            {{ item.court.name }}
+                            <!-- Display map link if exists -->
+                            {% if item.court.map_link %}
+                            <a href="{{ item.court.map_link }}" target="_blank"
+                                class="ms-2 small text-decoration-none">Map - Click Here</a>
+                            {% endif %}
+                        </h5>
+                        <p class="card-text"><small class="text-muted">Location: {{ item.court.location }}</small></p>
+                        <!-- Check for available time slots -->
+                        {% if item.slots %}
+                        <form action="{% url 'reserve' item.court.id %}" method="post">
+                            {% csrf_token %}
+                            <div class="court-time-slots">
+                                {% for slot, available_slots, slot_range, reserved_profiles in item.slots %}
+                                <div style="margin-bottom: 10px;">
+                                    <label for="slot-{{ slot.id }}"
+                                        style="display: block; margin-bottom: 5px; white-space: normal;">
+                                        {{ slot.date }} - {{ slot.template.start_time|date:"H:i" }} to
+                                        {{slot.template.end_time|date:"H:i" }} - {{ available_slots }} slots available
+                                        ({{slot.template.level.name }} - {{ slot.template.player_type.name }})
+                                    </label>
+                                    <input type="hidden" name="slot_id_{{ slot.id }}" value="{{ slot.id }}">
+                                    <select name="slot_count_{{ slot.id }}" id="slot-{{ slot.id }}"
+                                        style="padding: 5px; width: 100%;">
+                                        <option value="0">Select</option>
+                                        {% for i in slot_range %}
+                                        <option value="{{ i }}">{{ i }}</option>
+                                        {% endfor %}
+                                    </select>                                    
+                                </div>
+                                {% endfor %}
+                            </div>
+
+                            {% if user.is_authenticated %}
+                            <input type="hidden" name="date" value="{{ selected_date }}">
+                            <button type="submit" class="btn btn-warning"
+                                style="background-color: #ffc107; color: black; padding: 5px 10px; border: none;">Reserve</button>
+                            {% else %}
+                            <p>Please log in to reserve.</p>
+                            {% endif %}
+                        </form>
+                        {% else %}
+                        <p>No availability for the selected dates.</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+<!-- Modal -->
+<div class="modal fade" id="availabilityModal" tabindex="-1" aria-labelledby="availabilityModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="availabilityModalLabel">Availability Calendar</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="calendar"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
